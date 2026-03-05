@@ -1,0 +1,7 @@
+{
+  "name": "profile 的方案2 两段式",
+  "description": "A high-fidelity, interactive clone of a Lemon8-style social media profile page with a post grid and navigation.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
