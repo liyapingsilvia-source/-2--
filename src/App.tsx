@@ -59,10 +59,12 @@ export default function App() {
       setBackgroundColor(color);
     } catch (error) {
       console.error("Robust color extraction failed, falling back to simple sampling:", error);
+      console.log("App: Using fallback color extraction for:", imageData);
       // Simple fallback logic
       const img = new Image();
       img.crossOrigin = "Anonymous";
-      img.src = imageData;
+      const cacheBuster = imageData.startsWith('data:') ? '' : (imageData.includes('?') ? '&' : '?') + 'cv=' + Date.now();
+      img.src = imageData + cacheBuster;
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -159,7 +161,7 @@ export default function App() {
 
                   {/* White background section starting from Bio area */}
                   <div 
-                    className={`bg-white rounded-t-[32px] pt-4 pb-32 min-h-[1000px] relative ${
+                    className={`bg-white rounded-t-[20px] pt-4 pb-32 min-h-[1000px] relative ${
                       profileBackground 
                         ? 'mt-[-20px] shadow-[0_-8px_30px_rgba(0,0,0,0.04)]' 
                         : 'mt-[-36px]'

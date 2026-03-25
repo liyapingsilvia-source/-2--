@@ -30,7 +30,7 @@ export function ProfileHeader() {
       {/* Right side: Avatar image, position X=266 */}
       <div className="absolute flex-shrink-0" style={{ width: 126, height: 126, left: 266, top: 12 }}>
         <img
-          src="https://picui.ogmua.cn/s1/2026/02/27/69a160fea63e6.webp"
+          src="https://free.picui.cn/free/2026/03/13/69b3c96ade7e1.png"
           alt="Erika Gelinda"
           className="h-full w-full object-contain"
           referrerPolicy="no-referrer"

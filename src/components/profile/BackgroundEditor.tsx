@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, Camera, Image as ImageIcon, Check } from 'lucide-react';
+import { profilePosts } from './VideoGrid';
 
 interface BackgroundEditorProps {
   onSave: (imageData: string) => void;
@@ -93,33 +94,18 @@ export function BackgroundEditor({ onSave, onClose }: BackgroundEditorProps) {
               <div className="w-6" />
             </div>
             <div className="flex-1 overflow-y-auto p-1 grid grid-cols-3 gap-1">
-              {/* User requested image */}
-              <div
-                className="aspect-square bg-gray-100 cursor-pointer active:opacity-80"
-                onClick={() => {
-                  setSelectedImage(`https://picui.ogmua.cn/s1/2026/03/05/69a8e99278eea.webp`);
-                  setStep('crop');
-                }}
-              >
-                <img
-                  src={`https://picui.ogmua.cn/s1/2026/03/05/69a8e99278eea.webp`}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              {/* Mock public posts */}
-              {Array.from({ length: 14 }).map((_, i) => (
+              {/* User posts */}
+              {profilePosts.map((post, i) => (
                 <div
                   key={i}
                   className="aspect-square bg-gray-100 cursor-pointer active:opacity-80"
                   onClick={() => {
-                    setSelectedImage(`https://picsum.photos/seed/${i + 100}/400/600`);
+                    setSelectedImage(post.src);
                     setStep('crop');
                   }}
                 >
                   <img
-                    src={`https://picsum.photos/seed/${i + 100}/400/600`}
+                    src={post.src}
                     alt=""
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"

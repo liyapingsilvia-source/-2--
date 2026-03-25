@@ -6,22 +6,30 @@ export async function extractDominantColor(imageSrc: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
+    
+    // Add a cache-buster to the URL to avoid CORS issues with cached versions
+    const cacheBuster = imageSrc.startsWith('data:') ? '' : (imageSrc.includes('?') ? '&' : '?') + 'cv=' + Date.now();
+    const finalSrc = imageSrc + cacheBuster;
+
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Could not get canvas context"));
-        return;
-      }
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          console.error("ColorService: Could not get canvas context");
+          reject(new Error("Could not get canvas context"));
+          return;
+        }
 
-      // Downsample for performance
-      const size = 64;
-      canvas.width = size;
-      canvas.height = size;
-      ctx.drawImage(img, 0, 0, size, size);
+        // Downsample for performance
+        const size = 64;
+        canvas.width = size;
+        canvas.height = size;
+        ctx.drawImage(img, 0, 0, size, size);
 
-      const imageData = ctx.getImageData(0, 0, size, size).data;
-      let pixels: number[][] = [];
+        const imageData = ctx.getImageData(0, 0, size, size).data;
+        console.log("ColorService: Successfully got image data");
+        let pixels: number[][] = [];
 
       const extractPixels = (useFilters: boolean) => {
         const result: number[][] = [];
@@ -161,9 +169,16 @@ export async function extractDominantColor(imageSrc: string): Promise<string> {
       const finalColor = `rgb(${Math.round(bestCentroid[0])}, ${Math.round(bestCentroid[1])}, ${Math.round(bestCentroid[2])})`;
       console.log("Extracted dominant color:", finalColor, "Score:", maxScore);
       resolve(finalColor);
+      } catch (e) {
+        console.error("ColorService: Error during color extraction", e);
+        reject(e);
+      }
     };
-    img.onerror = reject;
-    img.src = imageSrc;
+    img.onerror = (err) => {
+      console.error("ColorService: Image load error for", finalSrc, err);
+      reject(new Error(`Failed to load image: ${finalSrc}`));
+    };
+    img.src = finalSrc;
   });
 }
 
